@@ -37,6 +37,16 @@ export const getLaporBarangList = (page = 1, limit = 5) =>
     headers: authHeader(),
   }).then((r) => r.json());
 
+export const getAllLaporBarang = (page = 1, limit = 20) =>
+  fetch(`${BASE}/lapor-barang?page=${page}&limit=${limit}`, {
+    headers: authHeader(),
+  }).then((r) => r.json());
+
+export const getLaporanById = (id) =>
+  fetch(`${BASE}/lapor-barang/${id}`, { headers: authHeader() }).then((r) =>
+    r.json(),
+  );
+
 export const createLaporan = (formData) =>
   fetch(`${BASE}/lapor-barang`, {
     method: "POST",

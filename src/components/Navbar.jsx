@@ -16,6 +16,7 @@ export default function Navbar({ user, showLogout = false }) {
             <span className="font-extrabold text-lg tracking-tight">
               E-Amanah
             </span>
+
             {user?.role === "Admin" && (
               <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-medium">
                 Admin
@@ -25,34 +26,42 @@ export default function Navbar({ user, showLogout = false }) {
 
           <nav className="flex items-center gap-1">
             {!showLogout ? (
-              <>
-                <a
-                  href="#"
-                  className="px-3 py-1.5 text-sm rounded-lg hover:bg-white/10 transition-colors"
-                >
-                  Beranda
-                </a>
-                <a
-                  href="#"
-                  className="px-3 py-1.5 text-sm rounded-lg hover:bg-white/10 transition-colors opacity-75"
-                >
-                  Kategori
-                </a>
-                <a
-                  href="#"
-                  className="px-3 py-1.5 text-sm rounded-lg hover:bg-white/10 transition-colors opacity-75"
-                >
-                  Tentang
-                </a>
-              </>
-            ) : (
+              <></>
+            ) : user ? (
               <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-4 mr-2">
+                  {user.role === "Admin" ? (
+                    <Link
+                      to="/admin"
+                      className="text-sm opacity-80 hover:opacity-100 transition-opacity"
+                    >
+                      Beranda
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/dashboard"
+                      className="text-sm opacity-80 hover:opacity-100 transition-opacity"
+                    >
+                      Beranda
+                    </Link>
+                  )}
+
+                  <Link
+                    to="/daftar-barang"
+                    className="text-sm opacity-80 hover:opacity-100 transition-opacity"
+                  >
+                    Barang
+                  </Link>
+                </div>
+
                 <div className="hidden sm:flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
                     {user?.name?.[0]?.toUpperCase() ?? "U"}
                   </div>
+
                   <span className="text-sm font-medium">{user?.name}</span>
                 </div>
+
                 <button
                   onClick={handleLogout}
                   className="text-sm px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors font-medium"
@@ -60,7 +69,7 @@ export default function Navbar({ user, showLogout = false }) {
                   Keluar
                 </button>
               </div>
-            )}
+            ) : null}
           </nav>
         </div>
       </div>

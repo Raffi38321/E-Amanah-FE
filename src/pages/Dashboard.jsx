@@ -138,9 +138,12 @@ export default function Dashboard() {
                   >
                     📋 Lapor Temuan
                   </Link>
-                  <button className="bg-white/15 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-white/25 active:scale-95 transition-all border border-white/20">
+                  <Link
+                    to="/daftar-barang"
+                    className="bg-white/15 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-white/25 active:scale-95 transition-all border border-white/20"
+                  >
                     🔍 Cari Barang
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
