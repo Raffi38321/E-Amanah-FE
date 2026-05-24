@@ -7,6 +7,17 @@ import {
   getMyKlaims,
 } from "../utils/api";
 import Navbar from "../components/Navbar";
+import {
+  HiOutlineArchiveBox,
+  HiOutlineCheckCircle,
+  HiOutlineClock,
+  HiOutlineClipboardDocumentList,
+  HiOutlineMagnifyingGlass,
+  HiOutlineMapPin,
+  HiOutlineInboxStack,
+  HiOutlineXCircle,
+} from "react-icons/hi2";
+import { FiLoader } from "react-icons/fi";
 
 const statusStyle = {
   Pending: "bg-amber-100 text-amber-700 border border-amber-200",
@@ -18,7 +29,12 @@ const statusLabel = {
   Success: "Disetujui",
   Rejected: "Ditolak",
 };
-const statusIcon = { Pending: "⏳", Success: "✅", Rejected: "❌" };
+
+const StatusIcon = ({ status, cls = "w-4 h-4" }) => {
+  if (status === "Success") return <HiOutlineCheckCircle className={cls} />;
+  if (status === "Rejected") return <HiOutlineXCircle className={cls} />;
+  return <HiOutlineClock className={cls} />;
+};
 
 const claimedBadge = {
   true: {
@@ -42,7 +58,7 @@ function formatDate(d) {
 function StatCard({ value, label, color = "text-[#1a4731]", icon }) {
   return (
     <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100 flex flex-col items-center gap-1 hover:shadow-md transition-shadow">
-      {icon && <span className="text-xl mb-0.5">{icon}</span>}
+      <div className={`${color} mb-0.5`}>{icon}</div>
       <p className={`text-2xl sm:text-3xl font-extrabold ${color}`}>{value}</p>
       <p className="text-xs text-gray-500 font-medium text-center leading-tight">
         {label}
@@ -82,25 +98,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <svg
-            className="animate-spin h-8 w-8 text-[#1a4731]"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8z"
-            />
-          </svg>
+          <FiLoader className="animate-spin h-8 w-8 text-[#1a4731]" />
           <p className="text-gray-500 text-sm">Memuat dashboard...</p>
         </div>
       </div>
@@ -112,9 +110,8 @@ export default function Dashboard() {
       <Navbar user={user} showLogout />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
-        {/* Desktop: 2-col layout */}
         <div className="lg:grid lg:grid-cols-3 lg:gap-8 flex flex-col gap-5">
-          {/* ── LEFT COLUMN ── */}
+          {/* ── LEFT ── */}
           <div className="lg:col-span-2 flex flex-col gap-5">
             {/* Hero */}
             <div className="bg-gradient-to-br from-[#1a4731] to-[#2d6a4f] rounded-3xl px-6 py-7 sm:px-8 sm:py-8 text-white relative overflow-hidden shadow-xl shadow-[#1a4731]/20">
@@ -134,15 +131,16 @@ export default function Dashboard() {
                 <div className="flex gap-3 mt-5 flex-wrap">
                   <Link
                     to="/lapor-barang"
-                    className="bg-white text-[#1a4731] font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 active:scale-95 transition-all shadow-md"
+                    className="flex items-center gap-2 bg-white text-[#1a4731] font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 active:scale-95 transition-all shadow-md"
                   >
-                    📋 Lapor Temuan
+                    <HiOutlineClipboardDocumentList className="w-4 h-4" /> Lapor
+                    Temuan
                   </Link>
                   <Link
                     to="/daftar-barang"
-                    className="bg-white/15 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-white/25 active:scale-95 transition-all border border-white/20"
+                    className="flex items-center gap-2 bg-white/15 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-white/25 active:scale-95 transition-all border border-white/20"
                   >
-                    🔍 Cari Barang
+                    <HiOutlineMagnifyingGlass className="w-4 h-4" /> Cari Barang
                   </Link>
                 </div>
               </div>
@@ -153,18 +151,18 @@ export default function Dashboard() {
               <StatCard
                 value={stats?.totalTemuan ?? 0}
                 label="Barang Temuan"
-                icon="📦"
+                icon={<HiOutlineArchiveBox className="w-6 h-6" />}
               />
               <StatCard
                 value={stats?.sudahDiklaim ?? 0}
                 label="Sudah Diklaim"
-                icon="✅"
+                icon={<HiOutlineCheckCircle className="w-6 h-6" />}
                 color="text-emerald-600"
               />
               <StatCard
                 value={stats?.menunggu ?? 0}
                 label="Menunggu"
-                icon="⏳"
+                icon={<HiOutlineClock className="w-6 h-6" />}
                 color="text-amber-600"
               />
             </div>
@@ -175,16 +173,16 @@ export default function Dashboard() {
                 <h2 className="font-bold text-gray-900">
                   Laporan Temuan Terbaru
                 </h2>
-                <a
-                  href="#"
+                <Link
+                  to="/daftar-barang"
                   className="text-xs text-[#1a4731] font-semibold hover:underline"
                 >
                   Lihat Semua →
-                </a>
+                </Link>
               </div>
               {laporans.length === 0 ? (
                 <div className="py-12 text-center">
-                  <p className="text-3xl mb-2">📭</p>
+                  <HiOutlineInboxStack className="w-10 h-10 text-gray-300 mx-auto mb-2" />
                   <p className="text-sm text-gray-400">Belum ada laporan</p>
                 </div>
               ) : (
@@ -202,8 +200,8 @@ export default function Dashboard() {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-xl">
-                            📦
+                          <div className="w-full h-full flex items-center justify-center">
+                            <HiOutlineArchiveBox className="w-6 h-6 text-gray-400" />
                           </div>
                         )}
                       </div>
@@ -211,8 +209,9 @@ export default function Dashboard() {
                         <p className="text-sm font-semibold text-gray-900 truncate">
                           {item.name}
                         </p>
-                        <p className="text-xs text-gray-400 truncate mt-0.5">
-                          📍 {item.lokasi} · {formatDate(item.tanggal)}
+                        <p className="text-xs text-gray-400 truncate mt-0.5 flex items-center gap-1">
+                          <HiOutlineMapPin className="w-3 h-3 flex-shrink-0" />
+                          {item.lokasi} · {formatDate(item.tanggal)}
                         </p>
                       </div>
                       <span
@@ -227,9 +226,9 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN ── */}
+          {/* ── RIGHT ── */}
           <div className="flex flex-col gap-5">
-            {/* Profile card */}
+            {/* Profile */}
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sm:p-6">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-[#1a4731]/10 overflow-hidden flex-shrink-0">
@@ -276,7 +275,7 @@ export default function Dashboard() {
               </div>
               {klaims.length === 0 ? (
                 <div className="py-10 text-center px-4">
-                  <p className="text-3xl mb-2">📋</p>
+                  <HiOutlineClipboardDocumentList className="w-10 h-10 text-gray-300 mx-auto mb-2" />
                   <p className="text-sm text-gray-400">
                     Belum ada aktivitas klaim
                   </p>
@@ -289,10 +288,10 @@ export default function Dashboard() {
                       className="flex items-start gap-3 px-5 sm:px-6 py-4 hover:bg-gray-50/50 transition-colors"
                     >
                       <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm mt-0.5
-                        ${k.status === "Success" ? "bg-emerald-100" : k.status === "Rejected" ? "bg-red-100" : "bg-amber-100"}`}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5
+                        ${k.status === "Success" ? "bg-emerald-100 text-emerald-600" : k.status === "Rejected" ? "bg-red-100 text-red-500" : "bg-amber-100 text-amber-600"}`}
                       >
-                        {statusIcon[k.status]}
+                        <StatusIcon status={k.status} cls="w-4 h-4" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-800 truncate">

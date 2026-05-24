@@ -2,6 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { createLaporan } from "../utils/api";
+import {
+  HiOutlineArrowLeft,
+  HiOutlineExclamationTriangle,
+  HiOutlineCheckCircle,
+  HiOutlineCamera,
+  HiOutlineXMark,
+  HiOutlineClipboardDocumentList,
+  HiOutlineLightBulb,
+  HiOutlineMapPin,
+  HiOutlineCalendarDays,
+  HiOutlinePencilSquare,
+  HiOutlineTag,
+} from "react-icons/hi2";
+import { FiLoader } from "react-icons/fi";
 
 const KATEGORI = [
   "Elektronik",
@@ -33,14 +47,12 @@ export default function LaporBarang() {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
   };
-
   const handlePhoto = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setPhoto(file);
-    setPhotoPreview(URL.createObjectURL(file));
+    const f = e.target.files[0];
+    if (!f) return;
+    setPhoto(f);
+    setPhotoPreview(URL.createObjectURL(f));
   };
-
   const handleRemovePhoto = () => {
     setPhoto(null);
     setPhotoPreview(null);
@@ -51,15 +63,10 @@ export default function LaporBarang() {
     setLoading(true);
     setError("");
     try {
-      const formData = new FormData();
-      formData.append("name", form.name);
-      formData.append("kategori", form.kategori);
-      formData.append("lokasi", form.lokasi);
-      formData.append("tanggal", form.tanggal);
-      formData.append("deskripsiBarang", form.deskripsiBarang);
-      if (photo) formData.append("photo", photo);
-
-      const data = await createLaporan(formData);
+      const fd = new FormData();
+      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      if (photo) fd.append("photo", photo);
+      const data = await createLaporan(fd);
       if (data.status !== "succes") {
         setError(data.message || "Gagal membuat laporan");
         return;
@@ -81,8 +88,8 @@ export default function LaporBarang() {
         <Navbar showLogout />
         <div className="flex-1 flex items-center justify-center p-6">
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-10 max-w-md w-full text-center">
-            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-4xl mx-auto mb-5">
-              ✅
+            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
+              <HiOutlineCheckCircle className="w-10 h-10 text-emerald-600" />
             </div>
             <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
               Laporan Terkirim!
@@ -122,21 +129,42 @@ export default function LaporBarang() {
     );
   }
 
+  const tips = [
+    {
+      icon: <HiOutlinePencilSquare className="w-4 h-4" />,
+      text: "Tulis nama barang sejelas mungkin agar mudah dicari",
+    },
+    {
+      icon: <HiOutlineMapPin className="w-4 h-4" />,
+      text: "Cantumkan lokasi spesifik tempat barang ditemukan",
+    },
+    {
+      icon: <HiOutlineCalendarDays className="w-4 h-4" />,
+      text: "Pastikan tanggal sesuai dengan waktu penemuan",
+    },
+    {
+      icon: <HiOutlineCamera className="w-4 h-4" />,
+      text: "Upload foto untuk mempercepat proses klaim",
+    },
+    {
+      icon: <HiOutlineTag className="w-4 h-4" />,
+      text: "Deskripsikan ciri khusus seperti warna, merek, atau kondisi",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <Navbar showLogout />
-
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div className="lg:grid lg:grid-cols-3 lg:gap-8 flex flex-col gap-6">
-          {/* ── LEFT: Form ── */}
+          {/* Form */}
           <div className="lg:col-span-2">
-            {/* Page header */}
             <div className="mb-6">
               <button
                 onClick={() => navigate("/dashboard")}
                 className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors mb-4"
               >
-                ← Kembali ke Dashboard
+                <HiOutlineArrowLeft className="w-4 h-4" /> Kembali ke Dashboard
               </button>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
                 Lapor Barang Temuan
@@ -158,7 +186,6 @@ export default function LaporBarang() {
               </div>
 
               <div className="px-6 sm:px-8 py-7 flex flex-col gap-5">
-                {/* Nama barang */}
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="name"
@@ -178,7 +205,6 @@ export default function LaporBarang() {
                   />
                 </div>
 
-                {/* Kategori + Tanggal */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
                     <label
@@ -205,7 +231,6 @@ export default function LaporBarang() {
                       ))}
                     </select>
                   </div>
-
                   <div className="flex flex-col gap-1.5">
                     <label
                       htmlFor="tanggal"
@@ -226,7 +251,6 @@ export default function LaporBarang() {
                   </div>
                 </div>
 
-                {/* Lokasi */}
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="lokasi"
@@ -246,7 +270,6 @@ export default function LaporBarang() {
                   />
                 </div>
 
-                {/* Deskripsi */}
                 <div className="flex flex-col gap-1.5">
                   <label
                     htmlFor="deskripsiBarang"
@@ -277,7 +300,6 @@ export default function LaporBarang() {
                       (opsional)
                     </span>
                   </label>
-
                   {photoPreview ? (
                     <div className="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-gray-200 bg-gray-100">
                       <img
@@ -288,9 +310,9 @@ export default function LaporBarang() {
                       <button
                         type="button"
                         onClick={handleRemovePhoto}
-                        className="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-md transition-colors"
+                        className="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-colors"
                       >
-                        ✕
+                        <HiOutlineXMark className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
@@ -298,7 +320,7 @@ export default function LaporBarang() {
                       htmlFor="photo"
                       className="flex flex-col items-center justify-center w-full aspect-video border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-[#1a4731] hover:bg-[#1a4731]/5 transition-colors bg-gray-50"
                     >
-                      <span className="text-4xl mb-2">📷</span>
+                      <HiOutlineCamera className="w-10 h-10 text-gray-400 mb-2" />
                       <p className="text-sm font-semibold text-gray-600">
                         Klik untuk upload foto
                       </p>
@@ -318,7 +340,7 @@ export default function LaporBarang() {
 
                 {error && (
                   <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
-                    <span className="text-sm">⚠️</span>
+                    <HiOutlineExclamationTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
                     <p className="text-red-600 text-sm font-medium">{error}</p>
                   </div>
                 )}
@@ -326,73 +348,37 @@ export default function LaporBarang() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-[#1a4731] hover:bg-[#15392a] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-[#1a4731]/30"
+                  className="w-full py-4 bg-[#1a4731] hover:bg-[#15392a] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-[#1a4731]/30 flex items-center justify-center gap-2"
                 >
                   {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg
-                        className="animate-spin h-4 w-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        />
-                      </svg>
-                      Mengirim Laporan...
-                    </span>
+                    <>
+                      <FiLoader className="w-4 h-4 animate-spin" /> Mengirim
+                      Laporan...
+                    </>
                   ) : (
-                    "📋 Kirim Laporan"
+                    <>
+                      <HiOutlineClipboardDocumentList className="w-4 h-4" />{" "}
+                      Kirim Laporan
+                    </>
                   )}
                 </button>
               </div>
             </form>
           </div>
 
-          {/* ── RIGHT: Tips ── */}
+          {/* Sidebar */}
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sm:p-6">
               <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <span className="w-7 h-7 bg-[#1a4731]/10 rounded-lg flex items-center justify-center text-sm">
-                  💡
+                <span className="w-7 h-7 bg-[#1a4731]/10 rounded-lg flex items-center justify-center text-[#1a4731]">
+                  <HiOutlineLightBulb className="w-4 h-4" />
                 </span>
                 Tips Pelaporan
               </h3>
               <ul className="space-y-3">
-                {[
-                  {
-                    icon: "📝",
-                    text: "Tulis nama barang sejelas mungkin agar mudah dicari",
-                  },
-                  {
-                    icon: "📍",
-                    text: "Cantumkan lokasi spesifik tempat barang ditemukan",
-                  },
-                  {
-                    icon: "📅",
-                    text: "Pastikan tanggal sesuai dengan waktu penemuan",
-                  },
-                  {
-                    icon: "📷",
-                    text: "Upload foto untuk mempercepat proses klaim",
-                  },
-                  {
-                    icon: "🔍",
-                    text: "Deskripsikan ciri khusus seperti warna, merek, atau kondisi",
-                  },
-                ].map((tip) => (
+                {tips.map((tip) => (
                   <li key={tip.text} className="flex items-start gap-3">
-                    <span className="text-base flex-shrink-0 mt-0.5">
+                    <span className="text-[#1a4731] flex-shrink-0 mt-0.5">
                       {tip.icon}
                     </span>
                     <p className="text-sm text-gray-600 leading-relaxed">
@@ -407,16 +393,16 @@ export default function LaporBarang() {
               <h3 className="font-bold mb-2">Proses Setelah Laporan</h3>
               <div className="space-y-3 mt-4">
                 {[
-                  { step: "1", label: "Laporan diterima sistem" },
-                  { step: "2", label: "Admin memverifikasi laporan" },
-                  { step: "3", label: "Pemilik mengajukan klaim" },
-                  { step: "4", label: "Barang dikembalikan" },
-                ].map((s) => (
-                  <div key={s.step} className="flex items-center gap-3">
+                  "Laporan diterima sistem",
+                  "Admin memverifikasi laporan",
+                  "Pemilik mengajukan klaim",
+                  "Barang dikembalikan",
+                ].map((label, i) => (
+                  <div key={label} className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold flex-shrink-0">
-                      {s.step}
+                      {i + 1}
                     </div>
-                    <p className="text-sm text-white/80">{s.label}</p>
+                    <p className="text-sm text-white/80">{label}</p>
                   </div>
                 ))}
               </div>

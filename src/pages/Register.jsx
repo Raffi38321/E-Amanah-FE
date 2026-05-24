@@ -3,6 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "/logo uin.png";
 import { register } from "../utils/api";
 import Navbar from "../components/Navbar";
+import {
+  HiOutlineEye,
+  HiOutlineEyeSlash,
+  HiOutlineExclamationTriangle,
+  HiArrowRight,
+  HiOutlineCheckCircle,
+  HiOutlineUserCircle,
+} from "react-icons/hi2";
+import { FiLoader } from "react-icons/fi";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -41,7 +50,6 @@ export default function Register() {
       formData.append("password", form.password);
       if (form.NIM) formData.append("NIM", form.NIM);
       if (photo) formData.append("photo", photo);
-
       const data = await register(formData);
       if (data.status !== "succes") {
         setError(data.message || "Registrasi gagal");
@@ -57,11 +65,15 @@ export default function Register() {
 
   const inputCls =
     "w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-900 outline-none focus:border-[#1a4731] transition-colors bg-gray-50 focus:bg-white";
+  const benefits = [
+    "Laporkan barang temuan",
+    "Klaim barang hilang Anda",
+    "Pantau status klaim real-time",
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <Navbar />
-
       <div className="flex-1 flex items-stretch">
         {/* Left panel */}
         <div className="hidden lg:flex lg:w-1/2 bg-[#1a4731] flex-col items-center justify-center p-12 text-white relative overflow-hidden">
@@ -83,13 +95,9 @@ export default function Register() {
               <p className="text-sm font-semibold mb-3">
                 Keuntungan bergabung:
               </p>
-              {[
-                "Laporkan barang temuan",
-                "Klaim barang hilang Anda",
-                "Pantau status klaim real-time",
-              ].map((t) => (
+              {benefits.map((t) => (
                 <div key={t} className="flex items-center gap-2 mb-2">
-                  <span className="text-green-300 text-sm">✓</span>
+                  <HiOutlineCheckCircle className="w-4 h-4 text-green-300 flex-shrink-0" />
                   <p className="text-sm text-white/80">{t}</p>
                 </div>
               ))}
@@ -136,8 +144,8 @@ export default function Register() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-2xl">
-                        👤
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <HiOutlineUserCircle className="w-8 h-8" />
                       </div>
                     )}
                   </div>
@@ -247,16 +255,20 @@ export default function Register() {
                     <button
                       type="button"
                       onClick={() => setShowPass(!showPass)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
-                      {showPass ? "🙈" : "👁️"}
+                      {showPass ? (
+                        <HiOutlineEyeSlash className="w-5 h-5" />
+                      ) : (
+                        <HiOutlineEye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
                 </div>
 
                 {error && (
                   <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
-                    <span className="text-sm">⚠️</span>
+                    <HiOutlineExclamationTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
                     <p className="text-red-600 text-sm font-medium">{error}</p>
                   </div>
                 )}
@@ -264,33 +276,17 @@ export default function Register() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 bg-[#1a4731] hover:bg-[#15392a] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-[#1a4731]/30 mt-1"
+                  className="w-full py-3.5 bg-[#1a4731] hover:bg-[#15392a] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-[#1a4731]/30 mt-1 flex items-center justify-center gap-2"
                 >
                   {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg
-                        className="animate-spin h-4 w-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        />
-                      </svg>
-                      Memproses...
-                    </span>
+                    <>
+                      <FiLoader className="w-4 h-4 animate-spin" /> Memproses...
+                    </>
                   ) : (
-                    "Daftar Sekarang →"
+                    <>
+                      <span>Daftar Sekarang</span>
+                      <HiArrowRight className="w-4 h-4" />
+                    </>
                   )}
                 </button>
               </form>

@@ -6,6 +6,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import LaporBarang from "./pages/LaporBarang";
 import DaftarBarang from "./pages/DaftarBarang";
 import AjukanKlaim from "./pages/AjukanKlaim";
+import KelolaKlaim from "./pages/KelolaKlaim";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/klaim" element={<KelolaKlaim />} />
         <Route path="/lapor-barang" element={<LaporBarang />} />
         <Route path="/daftar-barang" element={<DaftarBarang />} />
         <Route path="/ajukan-klaim" element={<AjukanKlaim />} />

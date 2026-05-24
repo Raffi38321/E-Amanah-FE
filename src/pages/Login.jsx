@@ -3,6 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "/logo uin.png";
 import { login, getMe } from "../utils/api";
 import Navbar from "../components/Navbar";
+import {
+  HiOutlineEye,
+  HiOutlineEyeSlash,
+  HiOutlineExclamationTriangle,
+  HiArrowRight,
+  HiOutlineMagnifyingGlass,
+  HiOutlineClipboardDocumentList,
+  HiOutlineCheckCircle,
+} from "react-icons/hi2";
+import { FiLoader } from "react-icons/fi";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -36,18 +46,27 @@ export default function Login() {
     }
   };
 
+  const features = [
+    {
+      icon: <HiOutlineMagnifyingGlass className="w-5 h-5" />,
+      label: "Temukan",
+    },
+    {
+      icon: <HiOutlineClipboardDocumentList className="w-5 h-5" />,
+      label: "Laporkan",
+    },
+    { icon: <HiOutlineCheckCircle className="w-5 h-5" />, label: "Klaim" },
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <Navbar />
 
-      {/* Desktop: split layout | Mobile: centered card */}
       <div className="flex-1 flex items-stretch">
-        {/* Left panel — hidden on mobile */}
+        {/* Left panel */}
         <div className="hidden lg:flex lg:w-1/2 bg-[#1a4731] flex-col items-center justify-center p-12 text-white relative overflow-hidden">
-          {/* decorative circles */}
           <div className="absolute -top-20 -left-20 w-72 h-72 bg-white/5 rounded-full" />
           <div className="absolute -bottom-16 -right-16 w-96 h-96 bg-white/5 rounded-full" />
-
           <div className="relative z-10 text-center max-w-sm">
             <img
               src={logo}
@@ -62,15 +81,12 @@ export default function Login() {
               <br />
               UIN Siber Syekh Nurjati Cirebon
             </p>
-
             <div className="mt-10 grid grid-cols-3 gap-4 text-center">
-              {[
-                ["🔍", "Temukan"],
-                ["📋", "Laporkan"],
-                ["✅", "Klaim"],
-              ].map(([icon, label]) => (
+              {features.map(({ icon, label }) => (
                 <div key={label} className="bg-white/10 rounded-2xl p-4">
-                  <div className="text-2xl mb-1">{icon}</div>
+                  <div className="flex justify-center mb-2 text-white">
+                    {icon}
+                  </div>
                   <p className="text-xs font-medium text-white/80">{label}</p>
                 </div>
               ))}
@@ -78,10 +94,9 @@ export default function Login() {
           </div>
         </div>
 
-        {/* Right panel — form */}
+        {/* Right panel */}
         <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
           <div className="w-full max-w-md">
-            {/* Mobile branding */}
             <div className="lg:hidden text-center mb-8">
               <img
                 src={logo}
@@ -150,16 +165,20 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={() => setShowPass(!showPass)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                     >
-                      {showPass ? "🙈" : "👁️"}
+                      {showPass ? (
+                        <HiOutlineEyeSlash className="w-5 h-5" />
+                      ) : (
+                        <HiOutlineEye className="w-5 h-5" />
+                      )}
                     </button>
                   </div>
                 </div>
 
                 {error && (
                   <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
-                    <span className="text-red-500 text-sm">⚠️</span>
+                    <HiOutlineExclamationTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
                     <p className="text-red-600 text-sm font-medium">{error}</p>
                   </div>
                 )}
@@ -167,33 +186,17 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 bg-[#1a4731] hover:bg-[#15392a] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-[#1a4731]/30 mt-1"
+                  className="w-full py-3.5 bg-[#1a4731] hover:bg-[#15392a] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-[#1a4731]/30 mt-1 flex items-center justify-center gap-2"
                 >
                   {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg
-                        className="animate-spin h-4 w-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        />
-                      </svg>
-                      Memproses...
-                    </span>
+                    <>
+                      <FiLoader className="w-4 h-4 animate-spin" /> Memproses...
+                    </>
                   ) : (
-                    "Masuk ke Dashboard →"
+                    <>
+                      <span>Masuk ke Dashboard</span>
+                      <HiArrowRight className="w-4 h-4" />
+                    </>
                   )}
                 </button>
               </form>

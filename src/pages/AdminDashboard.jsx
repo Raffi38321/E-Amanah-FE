@@ -1,7 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { getMe, getKlaimStats, getPendingKlaims } from "../utils/api";
 import Navbar from "../components/Navbar";
+import {
+  HiOutlineArchiveBox,
+  HiOutlineInboxArrowDown,
+  HiOutlineCheckCircle,
+  HiOutlineXCircle,
+  HiOutlineClock,
+  HiOutlineUsers,
+  HiOutlineChartBar,
+  HiOutlineClipboardDocumentList,
+} from "react-icons/hi2";
+import { FiLoader } from "react-icons/fi";
 
 function timeAgo(dateStr) {
   const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
@@ -16,7 +27,7 @@ function StatCard({ value, label, color, bg, icon }) {
     <div
       className={`${bg} rounded-2xl p-4 sm:p-5 flex flex-col items-center gap-1 hover:shadow-md transition-shadow border border-gray-100`}
     >
-      <span className="text-xl mb-0.5">{icon}</span>
+      <div className={`${color} mb-0.5`}>{icon}</div>
       <p className={`text-2xl sm:text-3xl font-extrabold ${color}`}>{value}</p>
       <p className="text-xs text-gray-500 font-medium text-center leading-tight">
         {label}
@@ -27,33 +38,37 @@ function StatCard({ value, label, color, bg, icon }) {
 
 const menuItems = (klaimMasuk) => [
   {
-    icon: "📦",
+    icon: <HiOutlineArchiveBox className="w-6 h-6" />,
     label: "Kelola Barang",
     sub: "Tambah & edit barang",
-    iconBg: "bg-emerald-100",
+    iconBg: "bg-emerald-100 text-emerald-700",
     ring: "",
+    to: "#",
   },
   {
-    icon: "🗂️",
+    icon: <HiOutlineClipboardDocumentList className="w-6 h-6" />,
     label: "Cek Klaim",
     sub: `${klaimMasuk} klaim menunggu`,
     subColor: "text-amber-600 font-semibold",
-    iconBg: "bg-amber-50",
+    iconBg: "bg-amber-50 text-amber-600",
     ring: "ring-2 ring-amber-400",
+    to: "/admin/klaim",
   },
   {
-    icon: "👥",
+    icon: <HiOutlineUsers className="w-6 h-6" />,
     label: "Kelola User",
     sub: "Manajemen pengguna",
-    iconBg: "bg-blue-100",
+    iconBg: "bg-blue-100 text-blue-600",
     ring: "",
+    to: "#",
   },
   {
-    icon: "📊",
+    icon: <HiOutlineChartBar className="w-6 h-6" />,
     label: "Laporan",
     sub: "Statistik & rekap",
-    iconBg: "bg-teal-100",
+    iconBg: "bg-teal-100 text-teal-600",
     ring: "",
+    to: "#",
   },
 ];
 
@@ -82,25 +97,7 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <svg
-            className="animate-spin h-8 w-8 text-[#1a4731]"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8z"
-            />
-          </svg>
+          <FiLoader className="animate-spin h-8 w-8 text-[#1a4731]" />
           <p className="text-gray-500 text-sm">Memuat dashboard...</p>
         </div>
       </div>
@@ -113,18 +110,16 @@ export default function AdminDashboard() {
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div className="lg:grid lg:grid-cols-3 lg:gap-8 flex flex-col gap-5">
-          {/* ── LEFT COLUMN ── */}
+          {/* ── LEFT ── */}
           <div className="lg:col-span-2 flex flex-col gap-5">
             {/* Hero */}
             <div className="bg-gradient-to-br from-[#1a4731] to-[#2d6a4f] rounded-3xl px-6 py-7 sm:px-8 sm:py-8 text-white relative overflow-hidden shadow-xl shadow-[#1a4731]/20">
               <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
               <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">
-                    Admin Panel
-                  </span>
-                </div>
+                <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">
+                  Admin Panel
+                </span>
                 <h1 className="text-2xl sm:text-3xl font-extrabold leading-tight mb-1">
                   Admin Dashboard
                 </h1>
@@ -139,28 +134,28 @@ export default function AdminDashboard() {
               <StatCard
                 value={stats?.totalBarang ?? 0}
                 label="Total Barang"
-                icon="📦"
+                icon={<HiOutlineArchiveBox className="w-6 h-6" />}
                 color="text-[#1a4731]"
                 bg="bg-white"
               />
               <StatCard
                 value={stats?.klaimMasuk ?? 0}
                 label="Klaim Masuk"
-                icon="📥"
+                icon={<HiOutlineInboxArrowDown className="w-6 h-6" />}
                 color="text-amber-600"
                 bg="bg-amber-50"
               />
               <StatCard
                 value={stats?.selesai ?? 0}
                 label="Selesai"
-                icon="✅"
+                icon={<HiOutlineCheckCircle className="w-6 h-6" />}
                 color="text-emerald-600"
                 bg="bg-emerald-50"
               />
               <StatCard
                 value={stats?.ditolak ?? 0}
                 label="Ditolak"
-                icon="❌"
+                icon={<HiOutlineXCircle className="w-6 h-6" />}
                 color="text-red-500"
                 bg="bg-red-50"
               />
@@ -171,12 +166,13 @@ export default function AdminDashboard() {
               <h2 className="font-bold text-gray-900 mb-4">Menu Admin</h2>
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {menuItems(stats?.klaimMasuk ?? 0).map((m) => (
-                  <button
+                  <Link
                     key={m.label}
+                    to={m.to}
                     className={`rounded-2xl p-4 sm:p-5 text-left hover:shadow-md active:scale-[0.98] transition-all bg-white border border-gray-100 ${m.ring}`}
                   >
                     <div
-                      className={`w-11 h-11 rounded-2xl ${m.iconBg} flex items-center justify-center text-2xl mb-3`}
+                      className={`w-11 h-11 rounded-2xl ${m.iconBg} flex items-center justify-center mb-3`}
                     >
                       {m.icon}
                     </div>
@@ -186,15 +182,15 @@ export default function AdminDashboard() {
                     >
                       {m.sub}
                     </p>
-                  </button>
+                  </Link>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN ── */}
+          {/* ── RIGHT ── */}
           <div className="flex flex-col gap-5">
-            {/* Admin profile */}
+            {/* Profile */}
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sm:p-6">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-[#1a4731]/10 overflow-hidden flex-shrink-0">
@@ -228,16 +224,16 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-gray-100">
                 <h2 className="font-bold text-gray-900">Klaim Terbaru</h2>
-                <a
-                  href="#"
+                <Link
+                  to="/admin/klaim"
                   className="text-xs text-[#1a4731] font-semibold hover:underline"
                 >
                   Lihat Semua →
-                </a>
+                </Link>
               </div>
               {klaims.length === 0 ? (
                 <div className="py-10 text-center px-4">
-                  <p className="text-3xl mb-2">📋</p>
+                  <HiOutlineClipboardDocumentList className="w-10 h-10 text-gray-300 mx-auto mb-2" />
                   <p className="text-sm text-gray-400">
                     Tidak ada klaim pending
                   </p>
@@ -257,8 +253,8 @@ export default function AdminDashboard() {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-lg">
-                            📦
+                          <div className="w-full h-full flex items-center justify-center">
+                            <HiOutlineArchiveBox className="w-5 h-5 text-emerald-400" />
                           </div>
                         )}
                       </div>
@@ -270,8 +266,8 @@ export default function AdminDashboard() {
                           {k.klaimBy?.name ?? "User"} · {timeAgo(k.createdAt)}
                         </p>
                       </div>
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200 flex-shrink-0">
-                        Pending
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200 flex-shrink-0 flex items-center gap-1">
+                        <HiOutlineClock className="w-3 h-3" /> Pending
                       </span>
                     </li>
                   ))}
@@ -279,7 +275,7 @@ export default function AdminDashboard() {
               )}
             </div>
 
-            {/* Quick stats summary */}
+            {/* Ringkasan */}
             <div className="bg-gradient-to-br from-[#1a4731] to-[#2d6a4f] rounded-3xl p-5 sm:p-6 text-white shadow-lg shadow-[#1a4731]/20">
               <h3 className="font-bold text-sm mb-3 text-white/80">
                 Ringkasan Sistem

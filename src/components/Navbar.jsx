@@ -1,4 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
+import {
+  HiOutlineHome,
+  HiOutlineArchiveBox,
+  HiArrowRightOnRectangle,
+} from "react-icons/hi2";
 
 export default function Navbar({ user, showLogout = false }) {
   const navigate = useNavigate();
@@ -16,7 +21,6 @@ export default function Navbar({ user, showLogout = false }) {
             <span className="font-extrabold text-lg tracking-tight">
               E-Amanah
             </span>
-
             {user?.role === "Admin" && (
               <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full font-medium">
                 Admin
@@ -25,31 +29,21 @@ export default function Navbar({ user, showLogout = false }) {
           </Link>
 
           <nav className="flex items-center gap-1">
-            {!showLogout ? (
-              <></>
-            ) : user ? (
+            {!showLogout ? null : user ? (
               <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-4 mr-2">
-                  {user.role === "Admin" ? (
-                    <Link
-                      to="/admin"
-                      className="text-sm opacity-80 hover:opacity-100 transition-opacity"
-                    >
-                      Beranda
-                    </Link>
-                  ) : (
-                    <Link
-                      to="/dashboard"
-                      className="text-sm opacity-80 hover:opacity-100 transition-opacity"
-                    >
-                      Beranda
-                    </Link>
-                  )}
-
+                <div className="hidden sm:flex items-center gap-1 mr-2">
+                  <Link
+                    to={user.role === "Admin" ? "/admin" : "/dashboard"}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg hover:bg-white/10 transition-colors opacity-80 hover:opacity-100"
+                  >
+                    <HiOutlineHome className="w-4 h-4" />
+                    Beranda
+                  </Link>
                   <Link
                     to="/daftar-barang"
-                    className="text-sm opacity-80 hover:opacity-100 transition-opacity"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg hover:bg-white/10 transition-colors opacity-80 hover:opacity-100"
                   >
+                    <HiOutlineArchiveBox className="w-4 h-4" />
                     Barang
                   </Link>
                 </div>
@@ -58,15 +52,15 @@ export default function Navbar({ user, showLogout = false }) {
                   <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold">
                     {user?.name?.[0]?.toUpperCase() ?? "U"}
                   </div>
-
                   <span className="text-sm font-medium">{user?.name}</span>
                 </div>
 
                 <button
                   onClick={handleLogout}
-                  className="text-sm px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors font-medium"
+                  className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors font-medium"
                 >
-                  Keluar
+                  <HiArrowRightOnRectangle className="w-4 h-4" />
+                  <span className="hidden sm:inline">Keluar</span>
                 </button>
               </div>
             ) : null}

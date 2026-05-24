@@ -65,9 +65,16 @@ export const getKlaimStats = () =>
     r.json(),
   );
 
-export const getPendingKlaims = (page = 1, limit = 5) =>
+export const getPendingKlaims = (page = 1, limit = 10) =>
   fetch(`${BASE}/pengajuan-klaim?page=${page}&limit=${limit}`, {
     headers: authHeader(),
+  }).then((r) => r.json());
+
+export const klaimAction = (id, status) =>
+  fetch(`${BASE}/pengajuan-klaim/action/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...authHeader() },
+    body: JSON.stringify({ status }),
   }).then((r) => r.json());
 
 export const createKlaim = (formData) =>
