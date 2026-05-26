@@ -266,7 +266,7 @@ export default function KelolaKlaim() {
     if (!localStorage.getItem("token")) return navigate("/login");
     getMe().then((meRes) => {
       if (meRes.status !== "succes") return navigate("/login");
-      if (meRes.data.employee.role !== "Admin") return navigate("/dashboard");
+      if (meRes.data.employee.role !== "Admin") return navigate("/login");
       setUser(meRes.data.employee);
       fetchKlaims(1);
     });

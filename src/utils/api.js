@@ -26,6 +26,25 @@ export const register = (formData) =>
     r.json(),
   );
 
+export const getAllUsers = (page = 1, limit = 10, search = "") =>
+  fetch(
+    `${BASE}/users/all?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`,
+    { headers: authHeader() },
+  ).then((r) => r.json());
+
+export const updateUser = (id, data) =>
+  fetch(`${BASE}/users/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...authHeader() },
+    body: JSON.stringify(data),
+  }).then((r) => r.json());
+
+export const deleteUser = (id) =>
+  fetch(`${BASE}/users/${id}`, {
+    method: "DELETE",
+    headers: authHeader(),
+  }).then((r) => r.json());
+
 // ── Lapor Barang ──────────────────────────────────────
 export const getLaporBarangStats = () =>
   fetch(`${BASE}/lapor-barang/stats`, { headers: authHeader() }).then((r) =>

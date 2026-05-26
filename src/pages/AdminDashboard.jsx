@@ -38,14 +38,6 @@ function StatCard({ value, label, color, bg, icon }) {
 
 const menuItems = (klaimMasuk) => [
   {
-    icon: <HiOutlineArchiveBox className="w-6 h-6" />,
-    label: "Kelola Barang",
-    sub: "Tambah & edit barang",
-    iconBg: "bg-emerald-100 text-emerald-700",
-    ring: "",
-    to: "#",
-  },
-  {
     icon: <HiOutlineClipboardDocumentList className="w-6 h-6" />,
     label: "Cek Klaim",
     sub: `${klaimMasuk} klaim menunggu`,
@@ -60,7 +52,7 @@ const menuItems = (klaimMasuk) => [
     sub: "Manajemen pengguna",
     iconBg: "bg-blue-100 text-blue-600",
     ring: "",
-    to: "#",
+    to: "/admin/users",
   },
   {
     icon: <HiOutlineChartBar className="w-6 h-6" />,
@@ -84,7 +76,8 @@ export default function AdminDashboard() {
     Promise.all([getMe(), getKlaimStats(), getPendingKlaims(1, 5)])
       .then(([meRes, statsRes, klaimRes]) => {
         if (meRes.status !== "succes") return navigate("/login");
-        if (meRes.data.employee.role !== "Admin") return navigate("/dashboard");
+        // Non-admin tidak boleh akses halaman admin
+        if (meRes.data.employee.role !== "Admin") return navigate("/login");
         setUser(meRes.data.employee);
         setStats(statsRes.data);
         setKlaims(klaimRes.data?.klaims ?? []);

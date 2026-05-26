@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
-  getMe,
   getLaporBarangStats,
   getLaporBarangList,
   getMyKlaims,
 } from "../utils/api";
 import Navbar from "../components/Navbar";
+import useAuthUser from "../hooks/useAuthUser";
 import {
   HiOutlineArchiveBox,
   HiOutlineCheckCircle,
@@ -69,32 +69,29 @@ function StatCard({ value, label, color = "text-[#1a4731]", icon }) {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, loading: authLoading } = useAuthUser("Mahasiswa");
   const [stats, setStats] = useState(null);
   const [laporans, setLaporans] = useState([]);
   const [klaims, setKlaims] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!localStorage.getItem("token")) return navigate("/login");
+    if (!user) return;
     Promise.all([
-      getMe(),
       getLaporBarangStats(),
       getLaporBarangList(1, 4),
       getMyKlaims(),
     ])
-      .then(([meRes, statsRes, laporRes, klaimRes]) => {
-        if (meRes.status !== "succes") return navigate("/login");
-        setUser(meRes.data.employee);
+      .then(([statsRes, laporRes, klaimRes]) => {
         setStats(statsRes.data);
         setLaporans(laporRes.data?.laporans ?? []);
         setKlaims(klaimRes.data?.klaims ?? []);
       })
       .catch(() => navigate("/login"))
       .finally(() => setLoading(false));
-  }, [navigate]);
+  }, [user, navigate]);
 
-  if (loading) {
+  if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -250,6 +247,9 @@ export default function Dashboard() {
                   </p>
                   <p className="text-xs text-gray-500 truncate">
                     {user?.email}
+                  </p>
+                  <p className="text-xs text-green-500 truncate">
+                    {user?.score}
                   </p>
                   <span className="inline-block mt-1 text-xs bg-[#1a4731]/10 text-[#1a4731] font-semibold px-2 py-0.5 rounded-full">
                     {user?.role}

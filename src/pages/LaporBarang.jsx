@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { createLaporan } from "../utils/api";
+import useAuthUser from "../hooks/useAuthUser";
 import {
   HiOutlineArrowLeft,
   HiOutlineExclamationTriangle,
@@ -30,6 +31,7 @@ const KATEGORI = [
 
 export default function LaporBarang() {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuthUser("Mahasiswa");
   const [form, setForm] = useState({
     name: "",
     kategori: "",
@@ -81,6 +83,14 @@ export default function LaporBarang() {
 
   const inputCls =
     "w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm text-gray-900 outline-none focus:border-[#1a4731] transition-colors bg-gray-50 focus:bg-white";
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <FiLoader className="animate-spin h-8 w-8 text-[#1a4731]" />
+      </div>
+    );
+  }
 
   if (success) {
     return (
