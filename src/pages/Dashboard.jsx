@@ -11,30 +11,14 @@ import {
   HiOutlineArchiveBox,
   HiOutlineCheckCircle,
   HiOutlineClock,
-  HiOutlineClipboardDocumentList,
-  HiOutlineMagnifyingGlass,
   HiOutlineMapPin,
   HiOutlineInboxStack,
-  HiOutlineXCircle,
 } from "react-icons/hi2";
 import { FiLoader } from "react-icons/fi";
-
-const statusStyle = {
-  Pending: "bg-amber-100 text-amber-700 border border-amber-200",
-  Success: "bg-emerald-100 text-emerald-700 border border-emerald-200",
-  Rejected: "bg-red-100 text-red-600 border border-red-200",
-};
-const statusLabel = {
-  Pending: "Menunggu",
-  Success: "Disetujui",
-  Rejected: "Ditolak",
-};
-
-const StatusIcon = ({ status, cls = "w-4 h-4" }) => {
-  if (status === "Success") return <HiOutlineCheckCircle className={cls} />;
-  if (status === "Rejected") return <HiOutlineXCircle className={cls} />;
-  return <HiOutlineClock className={cls} />;
-};
+import StatCard from "../components/StatCard";
+import ProfileCard from "../components/ProfileCard";
+import HeroSectionCard from "../components/HeroSectionCard";
+import ActivitasClaimCard from "../components/ActivitasClaimCard";
 
 const claimedBadge = {
   true: {
@@ -53,18 +37,6 @@ function formatDate(d) {
     month: "short",
     year: "numeric",
   });
-}
-
-function StatCard({ value, label, color = "text-[#1a4731]", icon }) {
-  return (
-    <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-gray-100 flex flex-col items-center gap-1 hover:shadow-md transition-shadow">
-      <div className={`${color} mb-0.5`}>{icon}</div>
-      <p className={`text-2xl sm:text-3xl font-extrabold ${color}`}>{value}</p>
-      <p className="text-xs text-gray-500 font-medium text-center leading-tight">
-        {label}
-      </p>
-    </div>
-  );
 }
 
 export default function Dashboard() {
@@ -110,38 +82,7 @@ export default function Dashboard() {
         <div className="lg:grid lg:grid-cols-3 lg:gap-8 flex flex-col gap-5">
           {/* ── LEFT ── */}
           <div className="lg:col-span-2 flex flex-col gap-5">
-            {/* Hero */}
-            <div className="bg-gradient-to-br from-[#1a4731] to-[#2d6a4f] rounded-3xl px-6 py-7 sm:px-8 sm:py-8 text-white relative overflow-hidden shadow-xl shadow-[#1a4731]/20">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
-              <div className="relative z-10">
-                <p className="text-white/70 text-sm mb-2">
-                  Selamat datang kembali 👋
-                </p>
-                <h1 className="text-2xl sm:text-3xl font-extrabold leading-tight mb-2">
-                  Halo, {user?.name?.split(" ")[0]}!
-                </h1>
-                <p className="text-white/70 text-sm max-w-sm">
-                  Kehilangan barang di kampus? Laporkan atau temukan barang
-                  melalui E-Amanah.
-                </p>
-                <div className="flex gap-3 mt-5 flex-wrap">
-                  <Link
-                    to="/lapor-barang"
-                    className="flex items-center gap-2 bg-white text-[#1a4731] font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-gray-50 active:scale-95 transition-all shadow-md"
-                  >
-                    <HiOutlineClipboardDocumentList className="w-4 h-4" /> Lapor
-                    Temuan
-                  </Link>
-                  <Link
-                    to="/daftar-barang"
-                    className="flex items-center gap-2 bg-white/15 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-white/25 active:scale-95 transition-all border border-white/20"
-                  >
-                    <HiOutlineMagnifyingGlass className="w-4 h-4" /> Cari Barang
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <HeroSectionCard user={user} />
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3 sm:gap-4">
@@ -223,94 +164,10 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* ── RIGHT ── */}
+          {/* ── KANAN TOT ── */}
           <div className="flex flex-col gap-5">
-            {/* Profile */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sm:p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#1a4731]/10 overflow-hidden flex-shrink-0">
-                  {user?.photo ? (
-                    <img
-                      src={user.photo}
-                      alt={user.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-[#1a4731]">
-                      {user?.name?.[0]?.toUpperCase()}
-                    </div>
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-bold text-gray-900 truncate">
-                    {user?.name}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate">
-                    {user?.email}
-                  </p>
-                  <p className="text-xs text-green-500 truncate">
-                    {user?.score}
-                  </p>
-                  <span className="inline-block mt-1 text-xs bg-[#1a4731]/10 text-[#1a4731] font-semibold px-2 py-0.5 rounded-full">
-                    {user?.role}
-                  </span>
-                </div>
-              </div>
-              {user?.NIM && (
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <p className="text-xs text-gray-400">NIM</p>
-                  <p className="text-sm font-semibold text-gray-700">
-                    {user.NIM}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Aktivitas klaim */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="px-5 sm:px-6 py-4 border-b border-gray-100">
-                <h2 className="font-bold text-gray-900">
-                  Aktivitas Klaim Saya
-                </h2>
-              </div>
-              {klaims.length === 0 ? (
-                <div className="py-10 text-center px-4">
-                  <HiOutlineClipboardDocumentList className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                  <p className="text-sm text-gray-400">
-                    Belum ada aktivitas klaim
-                  </p>
-                </div>
-              ) : (
-                <ul className="divide-y divide-gray-50">
-                  {klaims.map((k) => (
-                    <li
-                      key={k._id}
-                      className="flex items-start gap-3 px-5 sm:px-6 py-4 hover:bg-gray-50/50 transition-colors"
-                    >
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5
-                        ${k.status === "Success" ? "bg-emerald-100 text-emerald-600" : k.status === "Rejected" ? "bg-red-100 text-red-500" : "bg-amber-100 text-amber-600"}`}
-                      >
-                        <StatusIcon status={k.status} cls="w-4 h-4" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-800 truncate">
-                          {k.idLaporan?.name ?? "Barang"}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          {formatDate(k.createdAt)}
-                        </p>
-                        <span
-                          className={`inline-block mt-1.5 text-xs font-semibold px-2 py-0.5 rounded-full ${statusStyle[k.status]}`}
-                        >
-                          {statusLabel[k.status]}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <ProfileCard user={user} />
+            <ActivitasClaimCard klaims={klaims} formatDate={formatDate} />
           </div>
         </div>
       </main>

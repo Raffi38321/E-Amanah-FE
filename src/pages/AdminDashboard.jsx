@@ -9,10 +9,12 @@ import {
   HiOutlineXCircle,
   HiOutlineClock,
   HiOutlineUsers,
-  HiOutlineChartBar,
   HiOutlineClipboardDocumentList,
 } from "react-icons/hi2";
 import { FiLoader } from "react-icons/fi";
+import StatCard from "../components/StatCard";
+import ProfileCard from "../components/ProfileCard";
+import HeroSectionCard from "../components/HeroSectionCard";
 
 function timeAgo(dateStr) {
   const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
@@ -20,20 +22,6 @@ function timeAgo(dateStr) {
   if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
   if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
   return `${Math.floor(diff / 86400)} hari lalu`;
-}
-
-function StatCard({ value, label, color, bg, icon }) {
-  return (
-    <div
-      className={`${bg} rounded-2xl p-4 sm:p-5 flex flex-col items-center gap-1 hover:shadow-md transition-shadow border border-gray-100`}
-    >
-      <div className={`${color} mb-0.5`}>{icon}</div>
-      <p className={`text-2xl sm:text-3xl font-extrabold ${color}`}>{value}</p>
-      <p className="text-xs text-gray-500 font-medium text-center leading-tight">
-        {label}
-      </p>
-    </div>
-  );
 }
 
 const menuItems = (klaimMasuk) => [
@@ -53,14 +41,6 @@ const menuItems = (klaimMasuk) => [
     iconBg: "bg-blue-100 text-blue-600",
     ring: "",
     to: "/admin/users",
-  },
-  {
-    icon: <HiOutlineChartBar className="w-6 h-6" />,
-    label: "Laporan",
-    sub: "Statistik & rekap",
-    iconBg: "bg-teal-100 text-teal-600",
-    ring: "",
-    to: "#",
   },
 ];
 
@@ -106,23 +86,8 @@ export default function AdminDashboard() {
           {/* ── LEFT ── */}
           <div className="lg:col-span-2 flex flex-col gap-5">
             {/* Hero */}
-            <div className="bg-gradient-to-br from-[#1a4731] to-[#2d6a4f] rounded-3xl px-6 py-7 sm:px-8 sm:py-8 text-white relative overflow-hidden shadow-xl shadow-[#1a4731]/20">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2" />
-              <div className="relative z-10">
-                <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full inline-block mb-3">
-                  Admin Panel
-                </span>
-                <h1 className="text-2xl sm:text-3xl font-extrabold leading-tight mb-1">
-                  Admin Dashboard
-                </h1>
-                <p className="text-white/70 text-sm">
-                  Panel Pengelola E-Amanah · {user?.name}
-                </p>
-              </div>
-            </div>
+            <HeroSectionCard user={user} />
 
-            {/* Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
               <StatCard
                 value={stats?.totalBarang ?? 0}
@@ -184,35 +149,7 @@ export default function AdminDashboard() {
           {/* ── RIGHT ── */}
           <div className="flex flex-col gap-5">
             {/* Profile */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sm:p-6">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#1a4731]/10 overflow-hidden flex-shrink-0">
-                  {user?.photo ? (
-                    <img
-                      src={user.photo}
-                      alt={user.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl font-bold text-[#1a4731]">
-                      {user?.name?.[0]?.toUpperCase()}
-                    </div>
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-bold text-gray-900 truncate">
-                    {user?.name}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate">
-                    {user?.email}
-                  </p>
-                  <span className="inline-block mt-1 text-xs bg-[#1a4731] text-white font-semibold px-2.5 py-0.5 rounded-full">
-                    Admin
-                  </span>
-                </div>
-              </div>
-            </div>
-
+            <ProfileCard user={user} />
             {/* Klaim terbaru */}
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-gray-100">
